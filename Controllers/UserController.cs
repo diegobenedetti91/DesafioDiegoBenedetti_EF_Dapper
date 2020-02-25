@@ -45,6 +45,15 @@ namespace DesafioDiegoBenedetti.EF_Dapper.Controllers.EntityFramework
 
             if (ModelState.IsValid)
             {
+                IEnumerable<UserModel> userFound = await _interfaceUser.ListUsers();
+
+                if (userFound.FirstOrDefault(u => u.nameUser == user.nameUser) != null)
+                {
+                    //Caso o nome do usuário existir no banco de dados irá lançar a mensagem
+                    View("~/Views/Home/Index.cshtml").TempData["Message"] = "Usuario ja existe, favor informar outro nome!";
+                    return View("~/Views/User/Users.cshtml");
+                }
+
                 await _interfaceUser.Add(user);
                 //Caso usuário for cadastrado no banco de dados irá lançar a mensagem
                 View("~/Views/Home/Index.cshtml").TempData["Message"] = "Usuario cadastrado com sucesso!";
