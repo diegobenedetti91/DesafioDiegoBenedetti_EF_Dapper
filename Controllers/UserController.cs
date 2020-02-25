@@ -79,7 +79,7 @@ namespace DesafioDiegoBenedetti.EF_Dapper.Controllers.EntityFramework
             else
             {
                 // Caso o usuário não informe os dados de login e senha irá lançar a mensagem
-                View("~/Views/Home/Index.cshtml").TempData["Message"] = "Favor informar usuário e senha antes de realizar o login!";
+                View("~/Views/Home/Index.cshtml").TempData["Message"] = "Favor informar usuario e senha antes de realizar o login!";
                 return View("~/Views/Home/Index.cshtml");
             }
 
