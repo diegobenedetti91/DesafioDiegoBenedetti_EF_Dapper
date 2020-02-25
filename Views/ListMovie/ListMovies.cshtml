@@ -1,0 +1,109 @@
+﻿@model DesafioDiegoBenedetti.EF_Dapper.Models.Movie_Genrel
+
+@{
+    ViewData["Title"] = "ListMovies";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var user = DesafioDiegoBenedetti.EF_Dapper.Controllers.EntityFramework.UserController._userLogged;
+}
+
+<!-- Verifica se existe uma mensagem para retornar e informar a ação para o usuário-->
+@if (!string.IsNullOrEmpty(TempData["Message"] as string))
+{
+    <script>alert("@TempData["Message"]");</script>
+}
+
+<h1>Listagem de Filmes</h1>
+
+<br />
+<br />
+<!-- Caso o usuário clicar no botão excluir filmes selecionados ele irá direcionar -->
+<!-- para ação de excluir vários filmes no banco de dados-->
+@using (Html.BeginForm("DeleteSeveralMovies", "Movie", FormMethod.Post))
+{
+    <table class="table table-borderless table-dark">
+        <tr>
+            <!-- Redireciona o usuário para adicionar um novo filme-->
+            <td><a href="@Url.Action("Movies","Movie" )" class="btn btn-default" /><i>Adicionar Filme</i></td>
+            <!-- Redireciona o usuário para cadastrar uma locação de filme-->
+            <td><a href="@Url.Action("RentalMovies","RentalMovie")" class="btn btn-default" /><i>Adicionar Locação de Filme</i></td>
+            <!-- Redireciona na ação para excluir lista de filmes selecionados-->
+            <td><input type="submit" value="Excluir Filmes selecionados" class="btn btn-default" /></td>
+        </tr>
+        <tr><td><p>Filmes Locados pelo Usuário<p /></td></tr>
+        <tr>
+            <th scope="col"></th>
+            <th scope="col">CPF</th>
+            <th scope="col">Nome Filme</th>
+            <th scope="col">Gênero Filme</th>
+            <th scope="col">Data Locação</th>
+            <th scope="col">Status</th>
+        </tr>
+        <tbody>
+            <!-- Monta a lista de filmes que estão locados pelo usuário loggado-->
+            @{
+                if (Model.movie_GenrelModel.Count > 0)
+                {
+                    for (int i = 0; i < Model.movie_GenrelModel.Count; i++)
+                    {
+                        if (Model.movie_GenrelModel[i].dateRental != null)
+                        {
+                            <tr>
+                                <td scope="row">@Html.HiddenFor(modelItem => Model.movie_GenrelModel[i].idMovie)</td>
+                                <td scope="row">@Html.DisplayFor(modelItem => Model.movie_GenrelModel[i].cpf)</td>
+                                <td scope="row">@Html.DisplayFor(modelItem => Model.movie_GenrelModel[i].nameMovie)</td>
+                                <td scope="row">@Html.DisplayFor(modelItem => Model.movie_GenrelModel[i].movieGenre)</td>
+                                <td scope="row">@Html.DisplayFor(modelItem => Model.movie_GenrelModel[i].dateRental)</td>
+                                <td scope="row">@Html.DisplayFor(modelItem => Model.movie_GenrelModel[i].status)</td>
+                                <td>
+                                    <!-- Redireciona para ação que delete uma locação de filme, e após a exlcusão o filme -->
+                                    <!--retorna disponível para locação ou alteração-->
+                                    <a href="@Html.Raw(@Url.Action("DeleteRentalMovie","RentalMovie", new { cpf = Model.movie_GenrelModel[i].cpf ,idMovie = Model.movie_GenrelModel[i].idMovie}))" class="btn btn-default" /><i class="img-circle">Excluir</i>
+                                </td>
+                            </tr>
+                        }
+                    }
+                }
+            }
+        </tbody>
+    </table>
+    <table class="table table-dark">
+        <tr><td><p>Filmes Disponíveis para Locação</p></td></tr>
+        <tr>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col">Nome Filme</th>
+            <th scope="col">Gênero Filme</th>
+            <th scope="col">Status</th>
+        </tr>
+        <tbody>
+            <!-- Monta a listagem de filmes cadastrados e estão disponíveis para locação-->
+            @{
+                if (Model.movie_GenrelModel.Count > 0)
+                {
+                    for (int i = 0; i < Model.movie_GenrelModel.Count; i++)
+                    {
+                        if (Model.movie_GenrelModel[i].dateRental == null)
+                        {
+                            <tr>
+                                <td scope="row">@Html.HiddenFor(modelItem => Model.movie_GenrelModel[i].idMovie)</td>
+                                <td scope="row">@Html.CheckBoxFor(modelItem => Model.movie_GenrelModel[i].isChecked, new { @class = "form-check-input", @type = "checkbox", @checked = "Model.movie_GenrelModel[i].isChecked" })</td>
+                                <td scope="row">@Html.DisplayFor(modelItem => Model.movie_GenrelModel[i].nameMovie)</td>
+                                <td scope="row">@Html.DisplayFor(modelItem => Model.movie_GenrelModel[i].movieGenre)</td>
+                                <td scope="row">@Html.DisplayFor(modelItem => Model.movie_GenrelModel[i].status)</td>
+                                <td scope="row">@Html.HiddenFor(modelItem => Model.movie_GenrelModel[i].idMovie)</td>
+                                <td>
+                                    <!--Redireciona para ação para alterar o filme selecionado-->
+                                    <a href="@Html.Raw(@Url.Action("EditMovie","ListMovie", new { idMovie = Model.movie_GenrelModel[i].idMovie, cpf = Model.movie_GenrelModel[i].cpf}))" class="btn btn-default" /><i class="img-circle">Alterar</i>
+                                    <!--Redireção para ação para deletar um único filme -->
+                                    <a href="@Html.Raw(@Url.Action("DeleteMovies","Movie", new { idMovie = Model.movie_GenrelModel[i].idMovie}))" class="btn btn-default" /><i class="img-circle">Excluir</i>
+                                </td>
+                            </tr>
+                        }
+                    }
+                }
+            }
+        </tbody>
+    </table>
+}
+
+

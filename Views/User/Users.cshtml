@@ -1,0 +1,66 @@
+﻿@model DesafioDiegoBenedetti.EF_Dapper.Models.EntityFrameWork.UserModel
+
+@{
+    ViewData["Title"] = "User";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<br />
+<br />
+
+<!-- Verifica se existe uma mensagem para retornar e informar a ação para o usuário-->
+@if (!string.IsNullOrEmpty(TempData["Message"] as string))
+{
+    <script>alert("@TempData["Message"]");</script>
+}
+
+<!-- Redireciona para a ação de inserir um usuário no banco de dados-->
+@using (Html.BeginForm("AddUsers", "User", FormMethod.Post))
+{
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Nome Usuário:</label>
+        <div class="col-sm-10">
+            @Html.TextBoxFor(c => c.nameUser, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.nameUser, "Necessário informar o nome do usuário!");
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Senha:</label>
+        <div class="col-sm-10">
+            @Html.PasswordFor(c => c.password, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.password, "Necessário informar a senha!");
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">CPF:</label>
+        <div class="col-sm-10">
+            @Html.TextBoxFor(c => c.cpf, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.cpf, "Necessário informar o CPF!");
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Nome Completo:</label>
+        <div class="col-sm-10">
+            @Html.TextBoxFor(c => c.fullName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.fullName, "Necessário informar o nome completo!");
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-sm-10">
+            <div class="form-check">
+                @Html.CheckBoxFor(c => c.status, new { @class = "form-check-input", @type = "checkbox" })
+                <label class="form-check-label">Ativo:</label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-sm-10">
+            <!-- Chama a ação para cadastrar um usuário no banco de dados-->
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <!-- Caso o usuário não queira cadastrar seu usuário, esta ação retorna para a tela de login-->
+            <button type="button" class="btn btn-danger">@Html.ActionLink("Cancelar", "Index", "Home")</button>
+        </div>
+    </div>
+}
+

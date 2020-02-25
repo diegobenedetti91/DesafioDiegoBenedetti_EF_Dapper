@@ -1,0 +1,35 @@
+﻿@model DesafioDiegoBenedetti.EF_Dapper.Models.EntityFrameWork.UserModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<br />
+<br />
+
+<!-- Verifica se existe uma mensagem para retornar e informar a ação para o usuário-->
+@if (!string.IsNullOrEmpty(TempData["Message"] as string))
+{
+    <script>alert("@TempData["Message"]");</script>
+}
+
+    <div>
+        <!-- Verifica a ação se existe o usuário informado no banco de dados-->
+        @using (@Html.BeginForm("ValidUser", "User", FormMethod.Get))
+        {
+            <div class="form-group">
+                <label for="inputUser">Usuário</label>
+                @Html.TextBoxFor(c => c.nameUser, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label for="password">Senha</label>
+                @Html.PasswordFor(c => c.password, new { @class = "form-control" })
+            </div>
+            <div class="form-group form-check">
+                <!-- Ação para acessar o cadastro de usuário-->
+                <label class="control-label" for="addUser">@Html.ActionLink("Cadastrar Usuário", "Users", "User")</label>
+            </div>
+            <!-- Chama a ação para validar se o usuário existe no banco de dados-->
+            <button type="submit" class="btn btn-primary">Sing in</button>
+        }
+    </div>

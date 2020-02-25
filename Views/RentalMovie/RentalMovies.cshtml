@@ -1,0 +1,63 @@
+﻿@model DesafioDiegoBenedetti.EF_Dapper.Models.Movie_RentalViewModel
+
+@{
+    ViewData["Title"] = "RentalMovie";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var user = Model.user;
+}
+
+<!-- Verifica se existe uma mensagem para retornar e informar a ação para o usuário-->
+@if (!string.IsNullOrEmpty(TempData["Message"] as string))
+{
+    <script>alert("@TempData["Message"]");</script>
+}
+
+<h2>Locação de Filme</h2>
+
+
+<hr />
+<!-- Redireciona para a ação de cadastrar uma locação de filme no banco de dados-->
+@using (Html.BeginForm("AddRentalMovie", "RentalMovie", FormMethod.Post))
+{
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="RentalMovie">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="rentalDate" class="control-label"></label>
+                    <input asp-for="rentalDate" class="form-control" />
+                    @Html.ValidationMessageFor(model => model.rentalDate, "Necessário informar a data de locação");
+                </div>
+                <div class="form-group">
+                    <label asp-for="cpf" class="control-label"></label>
+                    <input asp-for="cpf" class="form-control" />
+                    @Html.ValidationMessageFor(model => model.cpf, "Necessário informar o cpf");
+                </div>
+                <div class="form-group">
+                    <label for="idMovie">Filmes:</label>
+                    <!-- Faz um laço e cria a lista de filmes para selecionar no cadastro locação de filme -->
+                    @{
+                        var list = new List<SelectListItem>();
+
+                        foreach (var item in Model.movies)
+                        {
+                            list.Add(new SelectListItem { Value = @item, Text = @item });
+                        }
+                    }
+                    @Html.DropDownListFor(model => model.nameMovie, new SelectList(list, "Value", "Text"), htmlAttributes: new { @class = "form-control input", data_bind = "value: EnderecoCobranca" })
+                    @Html.ValidationMessageFor(model => model.nameMovie, "Necessário informar o nome do filme");
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Salvar" class="btn btn-default" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <!-- Retorna para a listagem de filmes caso o usuário não queria cadastrar uma locação de filme-->
+        <a href="@Url.Action("ListMovies","ListMovie",user)" /><i>Voltar para Lista de Filmes</i>
+    </div>
+}
+
+

@@ -1,0 +1,67 @@
+﻿@model DesafioDiegoBenedetti.EF_Dapper.Models.Movie_GenreModel
+
+@{
+    ViewData["Title"] = "Movies";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var user = DesafioDiegoBenedetti.EF_Dapper.Controllers.EntityFramework.UserController._userLogged;
+}
+
+<!-- Verifica se existe uma mensagem para retornar e informar a ação para o usuário-->
+@if (!string.IsNullOrEmpty(TempData["Message"] as string))
+{
+    <script>alert("@TempData["Message"]");</script>
+}
+
+<h2>Cadastro de Filmes</h2>
+
+<hr />
+
+<!--Redireciona para a ação para cadastrar ou alterar um filme no banco de dados-->
+@using (Html.BeginForm("SaveMovie", "Movie", FormMethod.Post))
+{
+
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Movie">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group" style="visibility:hidden;">
+                    @Html.TextBoxFor(model => model.idMovie)
+                </div>
+                <div class="form-group">
+                    <label for="nameMovie">Nome Filme:</label>
+                    <input asp-for="nameMovie" class="form-control" />
+                    <span asp-validation-for="nameMovie" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label>
+                            <input asp-for="status" /> @Html.DisplayNameFor(model => model.status)
+                        </label>
+                    </div>
+                </div>
+                <!-- Faz um laço e cria a lista de genero de filme para selecionar no cadastro de filme -->
+                <div class="form-group">
+                    <label for="idGenreMovie">Gênero:</label>
+                    @{
+                        var list = new List<SelectListItem>();
+
+                        foreach (var item in Model.genre)
+                        {
+                            list.Add(new SelectListItem { Value = @item, Text = @item });
+                        }
+                    }
+                    @Html.DropDownListFor(model => model.movieGenre, new SelectList(list, "Value", "Text"), htmlAttributes: new { @class = "form-control input"})
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Salvar" class="btn btn-default" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <!-- Redireciona o usuário para a listagem de filmes caso não queira cadastrar ou alterar um filme -->
+        <a href="@Url.Action("ListMovies","ListMovie")" /><i>Voltar para Lista de Filmes</i>
+    </div>
+}
+
